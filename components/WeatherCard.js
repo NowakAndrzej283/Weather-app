@@ -1,23 +1,50 @@
 import { View, StyleSheet, Pressable, Text, FlatList } from "react-native";
+import { useState } from "react";
 
 function WeatherCard({data}){
-    // here i want to print the actual date with the temperature and the
+    // getting the actual timeZone hours 
+    const now = new Date();
+    //console.log('Actual hours', now);
+    now.setMinutes(0, 0, 0);
 
-    //console.log();
+    // change the Date prototype
+    Date.prototype.addHours = function(h){
+        this.setTime(this.getTime() + (h*60*60*1000));
+        return this;
+    }
+    now.addHours(1);
+
+    const currentWeather = data.find(item => {
+        const forecastDate = new Date(item.time);
+        return forecastDate.getTime() === now.getTime();
+    });
+
+    console.log('The current Weather is ', currentWeather);
+
+    const currentWeatherInfo = [
+        currentWeather
+    ];
+
     return(
         <View style={styles.mainCard}>
             <View style={styles.city}>
-                <Text style={styles.text}>Warsaw</Text>
+                <Text style={styles.text}> Warsaw </Text>
             </View>
             <View style={styles.data}>
-                <FlatList 
-                    data={data}
-                    keyExtractor={item => item.id}
-                    renderItem={(item, index)=>{
-                        
-                    }}
-                />
-                
+                { currentWeather &&
+                    <FlatList 
+                        data={currentWeatherInfo || []}
+                        keyExtractor={item => item.id}
+                        renderItem={({item})=>(
+                            <View style={styles.data}>
+                                <Text style={styles.dataText}>Date: {new Date(item.time).toLocaleDateString('pl-PL')}</Text>
+                                <Text style={styles.dataText}>Last Update: {new Date(item.time).getHours()}:00</Text>
+                                <Text style={styles.dataText}>{item.temperature}°C</Text>
+                                
+                            </View>
+                        )}
+                    />
+                }
             </View>
 
         </View>
@@ -41,23 +68,26 @@ const styles = StyleSheet.create({
         marginTop: 50,
         flexDirection: 'row'
     },
-    city: {
-    },
     data: {
-        flex: 1,
-        backgroundColor: 'white',
         height: '100%',
         minWidth: 150,
         width: 150,
-        marginTop: 5
+        flexDirection: 'column-reverse',
+        marginTop: 2
     },
     dataText: {
-        fontSize: 15
+        fontSize: 16,
+        fontFamily: 'arial'
     },
     text: {
         fontSize: 20,
         padding: 30,
         justifyContent: 'flex-start',
         fontFamily: 'fantasy',
+    },
+    item: {
+        padding: 5,
+        margin: 4,
+        backgroundColor: 'black'
     }
 });
