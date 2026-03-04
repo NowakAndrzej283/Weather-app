@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'space-between',
-        elevation: 10,
+        elevation: 50,
         marginTop: 50,
         flexDirection: 'row'
     },

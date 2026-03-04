@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ImageBackground } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import { useState } from 'react';
 
@@ -31,31 +31,42 @@ export default function App() {
 
 
   return (
-      <LinearGradient colors={['#4dbcc4',  '#0e2425']} style={styles.mainContainer}>
-        <Pressable  style={({pressed}) => 
-          pressed ? styles.pressed : styles.card}
-          onPress={handleCheckWeather}
-          disabled={isDisabled}
-        >
-          {isButtonPressed} ? <WeatherCard data={data}/> : <></>
+      <LinearGradient colors={['#a4e0bd',  '#0e2425']} style={styles.mainContainer}>
+          <ImageBackground 
+            source={require('./assets/images/warsaw-background.jpg')} 
+            resizeMode='cover'
+            style={styles.container} 
+            imageStyle={styles.backgroundImage}
+          >
+            <Pressable  style={({pressed}) => 
+              pressed ? styles.pressed : styles.card}
+              onPress={handleCheckWeather}
+              disabled={isDisabled}
+              
+            >
+              {isButtonPressed} ? <WeatherCard data={data}/> : <></>
 
-        </Pressable>
+            </Pressable>
 
-        <Pressable  style={({pressed}) => 
-          pressed ? styles.pressed : styles.card}
-          onPress={handleCheckWeather}
-          disabled={isDisabled}
-        >
-          {isButtonPressed} ? <WeatherCard data={data}/> : <></>
+            <Pressable  style={({pressed}) => 
+              pressed ? styles.pressed : styles.card}
+              onPress={handleCheckWeather}
+              disabled={isDisabled}
+            >
+              {isButtonPressed} ? <WeatherCard data={data}/> : <></>
 
-        </Pressable>
-
+            </Pressable>
+          </ImageBackground>
         </LinearGradient>
+        
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
+    flex: 1,
+  },
+  container: {
     flex: 1,
     padding: 10,
   },
@@ -66,8 +77,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10
   },
+  backgroundImage: {
+    opacity: 0.4
+  },
   pressed: {
-    opacity: 0.75,
+    opacity: 0.15,
 
   },
   info: {
