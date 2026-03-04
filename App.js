@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import { useState } from 'react';
 
 import { fetchWeather } from './services/Weather';
@@ -9,10 +10,11 @@ export default function App() {
   const [weather, setWeather] = useState([]);
   const [isDisabled, setIsDisabled] = useState(false);
   const [data, setData] = useState([]);
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   const handleCheckWeather = async()=> {
     const data = await fetchWeather();
-    console.log(data);
+    console.log('data from API',data);
 
     const formattedData = data.hourly.time.map((time, index)=> ({
       id: index.toString(),
@@ -29,31 +31,32 @@ export default function App() {
 
 
   return (
-    <View style={styles.mainContainer}>
+      <LinearGradient colors={['#4dbcc4',  '#0e2425']} style={styles.mainContainer}>
         <Pressable  style={({pressed}) => 
-          pressed ? styles.pressed : styles.card
-        }
-        onPress={handleCheckWeather}
+          pressed ? styles.pressed : styles.card}
+          onPress={handleCheckWeather}
+          disabled={isDisabled}
         >
-          <WeatherCard data={data}/>
+          {isButtonPressed} ? <WeatherCard data={data}/> : <></>
+
         </Pressable>
 
+        <Pressable  style={({pressed}) => 
+          pressed ? styles.pressed : styles.card}
+          onPress={handleCheckWeather}
+          disabled={isDisabled}
+        >
+          {isButtonPressed} ? <WeatherCard data={data}/> : <></>
 
-        <Pressable style={({pressed}) => 
-           pressed && styles.pressed
-        } 
-          onPress={handleCheckWeather} disabled={isDisabled}>
-          <Text>Tap to check the app.</Text>
         </Pressable>
-      
-    </View>
+
+        </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#4dbcc4',
     padding: 10,
   },
   button: {
