@@ -8,7 +8,7 @@ export const fetchWeather = async () => {
     hourly: 'temperature_2m'
   };
 
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${params.latitude}&longitude=${params.longitude}&hourly=temperature_2m,weather_code`;;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${params.latitude}&longitude=${params.longitude}&hourly=temperature_2m,weather_code`;
 
   response = await fetch(url);
 
