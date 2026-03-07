@@ -1,7 +1,8 @@
 import { View, StyleSheet, Pressable, Text, FlatList } from "react-native";
 import { useState } from "react";
 
-function WeatherCard({data}){
+function WeatherCard({data, city}){
+
     // getting the actual timeZone hours 
     const now = new Date();
     //console.log('Actual hours', now);
@@ -14,12 +15,18 @@ function WeatherCard({data}){
     }
     now.addHours(1);
 
+    console.log('data in WeatherCard', data);
+
     const currentWeather = data.find(item => {
         const forecastDate = new Date(item.time);
         return forecastDate.getTime() === now.getTime();
     });
 
     console.log('The current Weather is ', currentWeather);
+    const country = currentWeather?.country;
+    const region = currentWeather?.region;
+    const cityChosen = currentWeather?.cityChosen;
+
 
     const currentWeatherInfo = [
         currentWeather
@@ -28,24 +35,25 @@ function WeatherCard({data}){
     return(
         <View style={styles.mainCard}>
             <View style={styles.city}>
-                <Text style={styles.text}> Warsaw </Text>
+                <Text style={styles.text}>{country}, {region}</Text>
+                <Text style={styles.text}>{cityChosen}</Text>
             </View>
+            { currentWeather &&
             <View style={styles.data}>
-                { currentWeather &&
-                    <FlatList 
-                        data={currentWeatherInfo || []}
-                        keyExtractor={item => item.id}
-                        renderItem={({item})=>(
-                            <View style={styles.data}>
-                                <Text style={styles.dataText}>Date: {new Date(item.time).toLocaleDateString('pl-PL')}</Text>
-                                <Text style={styles.dataText}>Last Update: {new Date(item.time).getHours()}:00</Text>
-                                <Text style={styles.dataText}>{item.temperature}°C</Text>
-                                
-                            </View>
-                        )}
-                    />
-                }
+                <FlatList 
+                    data={currentWeatherInfo || []}
+                    keyExtractor={item => item.id}
+                    renderItem={({item})=>(
+                        <View style={styles.data}>
+                            <Text style={styles.dataText}>Date: {new Date(item.time).toLocaleDateString('pl-PL')}</Text>
+                            <Text style={styles.dataText}>Last Update: {new Date(item.time).getHours()}:00</Text>
+                            <Text style={styles.dataText}>{item.temperature}°C</Text>
+                            
+                        </View>
+                    )}
+                />
             </View>
+            }
 
         </View>
 
@@ -66,7 +74,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         elevation: 50,
         marginTop: 50,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        height: 100
+    },
+    city: {
+        margin: 10
     },
     data: {
         height: '100%',
@@ -80,10 +92,10 @@ const styles = StyleSheet.create({
         fontFamily: 'arial'
     },
     text: {
-        fontSize: 20,
-        padding: 30,
+        fontSize: 15,
+        padding: 5,
         justifyContent: 'flex-start',
-        fontFamily: 'fantasy',
+        fontFamily: 'fantasy'
     },
     item: {
         padding: 5,
