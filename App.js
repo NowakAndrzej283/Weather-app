@@ -1,13 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Pressable, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ImageBackground, Animated} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {Ionicons} from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { fetchWeather } from './services/Weather';
 import { getWeatherByCity } from './services/WeatherCity';
 import WeatherCard from './components/WeatherCard';
 import Searchbar from './components/Searchbar';
+import HoursCard from './components/HoursCard';
 
 export default function App() {
   const [weather, setWeather] = useState([]);
@@ -16,24 +17,33 @@ export default function App() {
   const [data, setData] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [city, setCity] = useState('');
+  const [showHours, setShowHours] = useState(false);
+
+  const cardAnim = useRef(new Animated.Value(200)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
 
   const isViewDisabled = city.length === 0
- 
 
-  // const handleCheckWeather = async()=> {
-  //   const data = await fetchWeather();
-  //   console.log('data from API',data);
+  useEffect(()=>{
+    if(data){
+      // reset teh position
+      //cardAnim.setValue(500);
+      Animated.timing(cardAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
 
-  //   const formattedData = data.hourly.time.map((time, index)=> ({
-  //     id: index.toString(),
-  //     time,
-  //     temperature: data.hourly.temperature_2m[index],
-  //     weatherCode: data.hourly.weather_code[index]
-  //   }));
-  //   setWeather(formattedData);
-  //   setIsDisabled(true);
-  //   setData(formattedData);
-  // };
+      setShowHours(true);
+
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    }
+  },[data])
+
 
   useEffect(() => {
     if(!city) return;
@@ -77,7 +87,6 @@ export default function App() {
 
     console.log('formated data', formattedData);
 
-
     setHasSearched(true);
     setData(formattedData);
     
@@ -99,28 +108,30 @@ export default function App() {
           />
 
           {city ? (
-            <WeatherCard data={data}/>
+            <Animated.View
+              style={{
+                transform: [{translateY: cardAnim}]
+              }}
+            >
+              <WeatherCard data={data}/>
+            </Animated.View>
             ):
             null
           }
-          {/* <Pressable  style={({pressed}) => 
-            pressed ? styles.pressed : styles.card}
-            onPress={handleCheckWeather}
-            
-            
-          >
-            {isButtonPressed && data && <WeatherCard data={data}/>}
 
-          </Pressable> */}
+          <HoursCard data={data}/>
+          { city && showHours ? (
+            <Animated.View 
+                style={{
+                opacity: opacity,
+                transform : [{translateY: cardAnim}]}}
+            >
+              <HoursCard data={data}/>
+            </Animated.View>
+          ) : null
+        }
 
-          {/* <Pressable  style={({pressed}) => 
-            pressed ? styles.pressed : styles.card}
-            onPress={handleCheckWeather}
-            disabled={isDisabled}
-          >
-            {isButtonPressed && data && <WeatherCard data={data}/>}
 
-          </Pressable> */}
           </ImageBackground>
         </LinearGradient>
         
