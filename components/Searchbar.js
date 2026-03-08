@@ -8,6 +8,7 @@ function Searchbar({setCity, onSearch}){
 
     function handleSearch(){
         onSearch();
+        setTimeout(()=> setIsIconChecked(false), 1000);
     }
 
     function handleOnSearch(){
@@ -16,7 +17,6 @@ function Searchbar({setCity, onSearch}){
 
         setIsIconChecked(true);
         handleSearch();
-
     }
 
     return (

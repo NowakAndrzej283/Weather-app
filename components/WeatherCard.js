@@ -74,8 +74,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         elevation: 50,
         marginTop: 50,
+        marginLeft: 20,
         flexDirection: 'row',
-        height: 100
+        height: 100,
+        width: '90%',
     },
     city: {
         margin: 10
