@@ -2,23 +2,46 @@ import { useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 
 function HoursCard({data}){
-    console.log('inside hourscard', data);
-    const id = data.id || [];
-    const temps = data.temperature
+    let dayLabel = '';
 
-    console.log('temperatures are ', temps);
+    // formatting data
+    const formatHour = (isoString) => {
+        const date = new Date(isoString); // shows each date 
+        const now = new Date();
+
+        const today = now.getDate();
+        const day = date.getDate();
+
+        // check if the date is today or tommorow
+        if( day === today){
+            dayLabel = 'Today';
+            //console.log(dayLabel);
+        }else if( day == today + 1 ){
+            dayLabel = 'Tommorow';
+            //console.log(dayLabel)
+        }else {
+            dayLabel = `${date.toLocaleDateString('pl-PL')}`;
+            //console.log(dayLabel);
+        }
+        const hours = date.getHours();
+
+        return `${dayLabel} ${hours}:00`;
+
+
+
+    };
 
     const hourlyData = data.map((h, i) => ({
         id: i.toString(),
-        time: h.time,
+        time: formatHour(h.time),
         temperature: h.temperature
     }));
 
-    console.log('this is horulydata ', hourlyData);
+
 
     return (
         <View style={styles.mainContainer}>
-            <Text style={styles.text}>Upcoming weather</Text>
+            <Text style={styles.text}>Weather forecast</Text>
                 <View style={styles.display}> 
                     <FlatList
                         data={hourlyData}
@@ -58,7 +81,8 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'white',
-        fontSize: 22,
+        fontSize: 25,
         padding: 10,
+        fontWeight: 'bold'
     }
 })
