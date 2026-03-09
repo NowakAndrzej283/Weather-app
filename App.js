@@ -11,18 +11,12 @@ import Searchbar from './components/Searchbar';
 import HoursCard from './components/HoursCard';
 
 export default function App() {
-  const [weather, setWeather] = useState([]);
-  const [weatherData, setWeatherData] = useState(null);
-  const [isDisabled, setIsDisabled] = useState(false);
   const [data, setData] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [city, setCity] = useState('');
   const [showHours, setShowHours] = useState(false);
 
   const cardAnim = useRef(new Animated.Value(200)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-
-  const isViewDisabled = city.length === 0
 
   useEffect(()=>{
     if(data){
@@ -35,19 +29,13 @@ export default function App() {
       }).start();
 
       setShowHours(true);
-
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
     }
   },[data])
 
 
   useEffect(() => {
     if(!city) return;
-    console.log("City updated:", city);
+    //console.log("City updated:", city);
     const checkCity = async()=>{
       try{
         setHasSearched(true);
@@ -68,12 +56,11 @@ export default function App() {
 
 
   const handleSearch = async()=>{
-    console.log('city from handleSearch', city);
+    //console.log('city from handleSearch', city);
     if(!city) return;
     const {weatherData, country, region, cityChosen} = await getWeatherByCity(city);
-    console.log('this is apiData', weatherData);
+    //console.log('this is apiData', weatherData);
     let apiData = weatherData;
-    console.log('country isssss: ', country);
 
     const formattedData = apiData.hourly.time.map((time, index)=> ({
       id: index.toString(),
@@ -85,7 +72,7 @@ export default function App() {
       cityChosen: cityChosen
     }));
 
-    console.log('formated data', formattedData);
+    //console.log('formated data', formattedData);
 
     setHasSearched(true);
     setData(formattedData);
@@ -119,17 +106,10 @@ export default function App() {
             null
           }
 
-          <HoursCard data={data}/>
-          { city && showHours ? (
-            <Animated.View 
-                style={{
-                opacity: opacity,
-                transform : [{translateY: cardAnim}]}}
-            >
+          { hasSearched ? (
               <HoursCard data={data}/>
-            </Animated.View>
           ) : null
-        }
+          }
 
 
           </ImageBackground>

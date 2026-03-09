@@ -15,14 +15,14 @@ function WeatherCard({data, city}){
     }
     now.addHours(1);
 
-    console.log('data in WeatherCard', data);
+    //console.log('data in WeatherCard', data);
 
     const currentWeather = data.find(item => {
         const forecastDate = new Date(item.time);
         return forecastDate.getTime() === now.getTime();
     });
 
-    console.log('The current Weather is ', currentWeather);
+    //console.log('The current Weather is ', currentWeather);
     const country = currentWeather?.country;
     const region = currentWeather?.region;
     const cityChosen = currentWeather?.cityChosen;
